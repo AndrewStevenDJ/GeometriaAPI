@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Mvc;
+using System; // Necesario para Math.PI y Math.Pow
 
+namespace Geometria.Controllers // <<<< ¡IMPORTANTE! Asegúrate que el namespace sea el correcto para tu proyecto >>>>
 {
     [ApiController]
     [Route("api/[controller]")] // Esto mapeará el controlador a la ruta /api/Volumenes
@@ -11,14 +14,14 @@
         /// <param name="radio">El radio de la esfera.</param>
         /// <returns>El volumen de la esfera.</returns>
         [HttpGet("esfera")]
-        public IActionResult GetVolumenEsfera(double radio)
+        public IActionResult GetVolumenEsfera([FromQuery] double radio)
         {
             if (radio < 0)
             {
                 return BadRequest("El radio no puede ser negativo.");
             }
 
-            double volumen = (4.0 / 3.0) * Math.PI * Math.Pow(radio, 3); // Fórmula: (4/3) * Pi * radio^3
+            double volumen = (4.0 / 3.0) * Math.PI * Math.Pow(radio, 3);
             return Ok(new { Figura = "Esfera", Radio = radio, Volumen = volumen });
         }
 
@@ -29,14 +32,14 @@
         /// <param name="lado">El lado del cubo.</param>
         /// <returns>El volumen del cubo.</returns>
         [HttpGet("cubo")]
-        public IActionResult GetVolumenCubo(double lado)
+        public IActionResult GetVolumenCubo([FromQuery] double lado)
         {
             if (lado < 0)
             {
                 return BadRequest("El lado no puede ser negativo.");
             }
 
-            double volumen = Math.Pow(lado, 3); // Fórmula: lado^3
+            double volumen = Math.Pow(lado, 3);
             return Ok(new { Figura = "Cubo", Lado = lado, Volumen = volumen });
         }
     }
