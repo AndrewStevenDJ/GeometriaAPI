@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using GeometriaAPI.Models; // Asegúrate de usar el namespace correcto
+using GeometriaAPI.Models;
 
 namespace GeometriaAPI.Data
 {
@@ -11,5 +11,8 @@ namespace GeometriaAPI.Data
         public DbSet<Rectangulo> Rectangulos { get; set; }
         public DbSet<Cuadrado> Cuadrados { get; set; }
         public DbSet<Circulo> Circulos { get; set; }
+
+        // 👇 Nueva tabla para usuarios (autenticación JWT)
+        public DbSet<Usuario> Usuarios { get; set; }
     }
 }
