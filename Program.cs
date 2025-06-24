@@ -21,6 +21,18 @@ builder.Services.AddScoped<RectanguloService>();
 builder.Services.AddScoped<CuadradoService>();
 builder.Services.AddScoped<CirculoService>();
 
+// === CORS: Permitir cualquier origen (ajusta si es necesario) ===
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirTodo", policy =>
+    {
+        policy
+            .AllowAnyOrigin() // O usa .WithOrigins("https://localhost:3000") si tienes frontend fijo
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 // Configura JWT
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var secretKey = jwtSettings["Key"];
@@ -80,7 +92,9 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Swagger en entorno de desarrollo
+// === Usar CORS antes de autenticación ===
+app.UseCors("PermitirTodo");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -89,7 +103,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Middleware de autenticación y autorización
 app.UseAuthentication();
 app.UseAuthorization();
 
