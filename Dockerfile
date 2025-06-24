@@ -2,26 +2,26 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copia global.json para que la versión se use en el build
-COPY global.json ./
+# Copia solo el archivo .csproj para optimizar cache de restore
+COPY ["GeometriaAPI.csproj", "./"]
+
+# Restaura las dependencias (nugets)
+RUN dotnet restore "GeometriaAPI.csproj"
 
 # Copia el resto del código
-COPY . ./
+COPY . .
 
-# Restaura dependencias
-RUN dotnet restore
-
-# Publica en Release
-RUN dotnet publish -c Release -o /app/publish
+# Publica la app en Release mode
+RUN dotnet publish "GeometriaAPI.csproj" -c Release -o /app/publish
 
 # Etapa 2: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 
-# Copia la app publicada
-COPY --from=build /app/publish ./
+# Copia la app compilada desde la etapa build
+COPY --from=build /app/publish .
 
-# Expone puerto 80
+# Expone el puerto 80 para tráfico HTTP
 EXPOSE 80
 
 # Ejecuta la aplicación
