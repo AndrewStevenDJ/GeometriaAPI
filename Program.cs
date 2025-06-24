@@ -27,7 +27,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("PermitirTodo", policy =>
     {
         policy
-            .AllowAnyOrigin() // O usa .WithOrigins("https://localhost:3000") si tienes frontend fijo
+            .AllowAnyOrigin()
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -95,11 +95,9 @@ var app = builder.Build();
 // === Usar CORS antes de autenticación ===
 app.UseCors("PermitirTodo");
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Habilitar Swagger en todos los entornos
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
