@@ -2,25 +2,27 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copia todo el proyecto
-COPY . .
+# Copia global.json para que la versión se use en el build
+COPY global.json ./
 
-# Restaura paquetes y publica en Release
+# Copia el resto del código
+COPY . ./
+
+# Restaura dependencias
 RUN dotnet restore
+
+# Publica en Release
 RUN dotnet publish -c Release -o /app/publish
 
 # Etapa 2: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 
-# Copia solo los archivos publicados de la etapa build
-COPY --from=build /app/publish .
+# Copia la app publicada
+COPY --from=build /app/publish ./
 
-# Listar archivos para verificar (opcional)
-RUN ls -l /app
-
-# Puerto expuesto
+# Expone puerto 80
 EXPOSE 80
 
-# Ejecutar la aplicación
+# Ejecuta la aplicación
 ENTRYPOINT ["dotnet", "GeometriaAPI.dll"]
